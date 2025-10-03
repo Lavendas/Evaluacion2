@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambar Martin - Diseñadora</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* CSS proporcionado por el usuario con ajustes para el gráfico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+        }
+        body::before {
+            content: '★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★★ ★ ★ ★ ★ ★ ★ ★ ★ ★★ ★ ★ ★ ★ ★ ★ ★ ★ ★★ ★ ★ ★ ★ ★ ★ ★ ★ ★★ ★ ★ ★ ★ ★ ★ ★ ★ ★★ ★ ★ ★ ★ ★ ★ ★ ★ ★★ ★ ★ ★ ★ ★ ★ ★ ★ ★★ ★ ★ ★ ★ ★ ★ ★ ★ ★★ ★ ★ ★ ★ ★ ★ ★ ★ ★★ ★ ★ ★ ★ ★ ★ ★ ★ ★★ ★ ★ ★ ★ ★ ★ ★ ★ ★';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 35px;
+            color: rgba(70, 118, 186, 0.15);
+            word-spacing: 80px;
+            line-height: 200px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 60px 0 40px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: #2c2c2c;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        .nav {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #666;
+            margin: 0 25px;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: #2c2c2c;
+        }
+
+        /* Gallery Grid */
+        .gallery {
+            padding: 40px 0;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            background-color: #fff;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            /* Fuerza el aspecto cuadrado para que sean uniformes (opcional) */
+            padding-bottom: 100%; 
+            height: 0;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+            position: absolute; /* Ajuste para el padding-bottom */
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.01);
+            z-index: 1;
+        }
+
+
+        .gallery-item:hover img {
+            opacity: 0.9;
+        }
+
+        /* Overlay for project info */
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(44, 44, 44, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay h3 {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .gallery-overlay p {
+            color: #ccc;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* Skills Section */
+        .skills {
+            padding: 40px 20px;
+            margin: 40px 0;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .skills h2 {
+            color: #4676BA;
+            margin-bottom: 30px;
+            font-weight: 300;
+            font-size: 1.8rem;
+        }
+        
+        /* Contenedor central para limitar el gráfico */
+        .skills-container {
+            /* Hacemos que el contenedor sea el ancho de 1.3 cuadros de galería */
+            max-width: 350px; 
+            margin: 0 auto;
+            /* Ajustamos la altura para que el contenedor ocupe poco espacio vertical */
+            height: 250px; 
+            position: relative;
+        }
+        
+        #skillsChart {
+            width: 100%;
+            height: 100%;
+            /* El canvas tomará el tamaño del skills-container */
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 60px 0 40px;
+            border-top: 1px solid #e5e5e5;
+            margin-top: 40px;
+        }
+
+        .footer p {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #2c2c2c;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .nav a {
+                display: block;
+                margin: 10px 0;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+
+            .skills-container {
+                max-width: 100%;
+                height: 300px;
+            }
+        }
+
+        /* Tablet */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>AMBAR MARTIN</h1>
+            <p>Diseñadora</p>
+        </header>
+
+        <nav class="nav">
+            <a href="index.html" class="active">Portafolio</a>
+            <a href="about.html">Sobre mí</a>
+        </nav>
+
+        <section class="gallery">
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="fenix.jpg" alt="Proyecto 1">
+                    <div class="gallery-overlay">
+                        <h3>Las fenix</h3>
+                        <p>Logotipo</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="tioricky.png" alt="Proyecto 2">
+                    <div class="gallery-overlay">
+                        <h3>Donde el Tio Rocky</h3>
+                        <p>Diseño de Carteles</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="zummm.png" alt="Proyecto 3">
+                    <div class="gallery-overlay">
+                        <h3>Zummm</h3>
+                        <p>Diseño Industrial</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="logo.jpg" alt="Proyecto 4">
+                    <div class="gallery-overlay">
+                        <h3>Logo Mimesis</h3>
+                        <p>Logotipo</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="mimesis.jpg" alt="Proyecto 5">
+                    <div class="gallery-overlay">
+                        <h3>Mimesis</h3>
+                        <p>Diseño de Producto</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="aguanoble.jpg" alt="Proyecto 6">
+                    <div class="gallery-overlay">
+                        <h3>Agua Noble</h3>
+                        <p>Diseño de Producto</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="cavernas.png" alt="Proyecto 6">
+                    <div class="gallery-overlay">
+                        <h3>Cavernas Urbanas</h3>
+                        <p>Diseño Industrial</p>
+                    </div>
+                </div>
+                 <div class="gallery-item">
+                    <img src="mimesis.jpg" alt="Proyecto 7">
+                    <div class="gallery-overlay">
+                        <h3>Mimesis</h3>
+                        <p>Diseño de Producto</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="skills">
+            <h2>Evolución de Habilidades de Diseño (2022 - 2025)</h2>
+            <div class="skills-container">
+                <canvas id="skillsChart"></canvas> 
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>© 2025 Ambar Martin. Todos los derechos reservados.</p>
+            <div class="social-links">
+                <a href="#">Behance</a>
+                <a href="#">LinkedIn</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('skillsChart').getContext('2d');
+
+        // Paleta de azules para las líneas que representarán cada habilidad
+        const colorDisenoGrafico = '#1E3A8A'; 
+        const colorBranding = '#2563EB';     
+        const colorUXUI = '#3B82F6';         
+        const colorIndustrial = '#93C5FD';   
+
+        // Datos simulados (0-100)
+        const dataSkills = {
+            labels: ['2022', '2023', '2024', '2025'],
+            datasets: [
+                {
+                    label: 'Diseño Gráfico',
+                    data: [70, 80, 90, 95], 
+                    borderColor: colorDisenoGrafico,
+                    backgroundColor: colorDisenoGrafico,
+                    tension: 0.3,
+                    fill: false,
+                    pointRadius: 4, 
+                    pointHoverRadius: 6,
+                },
+                {
+                    label: 'Branding',
+                    data: [60, 75, 85, 95],
+                    borderColor: colorBranding,
+                    backgroundColor: colorBranding,
+                    tension: 0.3,
+                    fill: false,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                },
+                {
+                    label: 'UX/UI',
+                    data: [40, 60, 75, 85],
+                    borderColor: colorUXUI,
+                    backgroundColor: colorUXUI,
+                    tension: 0.3,
+                    fill: false,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                },
+                {
+                    label: 'Diseño Industrial',
+                    data: [30, 45, 55, 65],
+                    borderColor: colorIndustrial,
+                    backgroundColor: colorIndustrial,
+                    tension: 0.3,
+                    fill: false,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                },
+            ]
+        };
+
+        // Crear el nuevo gráfico de líneas con puntos
+        new Chart(ctx, {
+            type: 'line', 
+            data: dataSkills,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, /* Importante: permite que el gráfico respete el tamaño del contenedor */
+                plugins: {
+                    legend: {
+                        position: 'top', 
+                        labels: {
+                            font: { size: 10 }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Comparativa Anual de Habilidades',
+                        font: { size: 12, weight: 'normal' }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Año',
+                            font: { size: 10 }
+                        },
+                        grid: { display: false },
+                        ticks: { font: { size: 9 } }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Nivel (0 - 100)',
+                            font: { size: 10 }
+                        },
+                        min: 0,
+                        max: 100, 
+                        grid: { color: '#E0E0E0' },
+                        ticks: { stepSize: 20, font: { size: 9 } }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
